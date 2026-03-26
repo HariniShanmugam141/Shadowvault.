@@ -1,6 +1,5 @@
 # 🔐 ShadowVault — Intelligent Adaptive Data Anonymization Platform
 
-> NASSCOM Hackathon 2025 | Privacy & Compliance Track
 
 ---
 
@@ -16,26 +15,7 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-### Step 3 — Install Tesseract OCR
-Download and install from:
-https://github.com/UB-Mannheim/tesseract/wiki
-
-Add to PATH: `C:\Program Files\Tesseract-OCR`
-
-### Step 4 — Install Ollama (for LLM contextual detection)
-Download from: https://ollama.com/download
-
-Then run:
-```bash
-ollama pull mistral
-```
-
-Start Ollama server (runs in background):
-```bash
-ollama serve
-```
-
-### Step 5 — Run ShadowVault
+### Step 3 — Run ShadowVault
 ```bash
 python app.py
 ```
@@ -48,28 +28,36 @@ Open: http://127.0.0.1:5000
 
 ```
 shadowvault/
-├── app.py                  ← Flask web server + all routes
-├── shadowvault_core.py     ← Core engine (PII, vault, linking, scoring)
-├── requirements.txt
+├── shadowvault.py    ← Core engine (detection, encryption, tokenisation)
+├── app.py            ← Flask REST API
 ├── templates/
-│   ├── index.html          ← Dashboard + upload UI
-│   ├── vault.html          ← Token vault + decryption
-│   └── entities.html       ← Cross-document entity graph
-├── vault/
-│   ├── shadowvault.db      ← SQLite: tokens, entities, documents
-│   └── master.key          ← AES-256 master encryption key (auto-generated)
-├── uploads/                ← Uploaded documents
-└── outputs/                ← Redacted output documents
+│   └── index.html    ← Single-page UI
+├── static/
+│   ├── css/style.css
+│   └── js/app.js
+├── uploads/          ← Session input files
+├── outputs/          ← Tokenised output files
+└── vault/
+    └── <session_id>/
+        ├── vault.db      ← Encrypted token→value mapping
+        ├── master.key    ← AES-256 master key
+        └── keys/
+            ├── doctor.key
+            ├── auditor.key
+            ├── legal_team.key
+            ├── analyst.key
+            └── admin.key
 ```
+ 
 
 ---
 
 ## ✨ Features
 
-### 1. 🔍 PII Detection (3 Layers)
+### 1. 🔍 PII Detection 
 - **Regex**: 20+ patterns — Aadhaar, PAN, passport, phone, email, addresses
 - **spaCy NER**: Named entity recognition for names, locations, dates
-- **Ollama LLM**: Contextual/implied PII detection (requires Ollama running)
+- **Ollama LLM**: Contextual/implied PII detection (requires Ollama running)(optional)
 
 ### 2. 🔄 Reversible Anonymization
 - PII replaced with encrypted tokens: `<<SV-TOKEN-A1B2C3D4>>`
